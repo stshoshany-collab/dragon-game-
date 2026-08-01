@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐉 משחק הדרקונים 🐉</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#fce7f3 0%,#f3e8ff 50%,#dbeafe 100%);min-height:100vh;padding-bottom:40px;color:#1f2937;}
+  .header{background:linear-gradient(90deg,#a855f7,#ec4899);color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.15);position:sticky;top:0;z-index:40;}
+  .header-in{max-width:1000px;margin:0 auto;padding:14px 16px;}
+  .header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .btn-home{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:none;color:#fff;font-weight:bold;font-size:15px;padding:8px 16px;border-radius:999px;cursor:pointer;transition:.2s;font-family:inherit;}
+  .btn-home:hover{background:rgba(255,255,255,.32);}
+  .title{font-size:clamp(20px,4vw,30px);font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.2);}
+  .score{display:flex;align-items:center;gap:6px;background:#facc15;color:#713f12;font-weight:bold;padding:8px 16px;border-radius:999px;}
+  .toggle{display:flex;justify-content:center;margin-top:12px;}
+  .toggle-in{background:rgba(255,255,255,.2);border-radius:999px;padding:4px;display:flex;gap:4px;}
+  .tab{border:none;font-family:inherit;font-weight:bold;font-size:14px;padding:6px 20px;border-radius:999px;cursor:pointer;transition:.2s;background:transparent;color:#fff;}
+  .tab.active{background:#fff;color:#7c3aed;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  .wrap{max-width:1000px;margin:24px auto 0;padding:0 16px;}
+  .fade{animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .intro{background:#fff;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:28px;margin-bottom:24px;text-align:center;border:4px solid #e9d5ff;}
+  .intro .spark{font-size:40px;margin-bottom:10px;}
+  .intro h2{font-size:clamp(20px,4vw,28px);font-weight:800;color:#1f2937;margin-bottom:8px;}
+  .intro p{color:#6b7280;font-size:16px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .dcard{text-align:right;border-radius:24px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);cursor:pointer;transition:.2s;border:4px solid;font-family:inherit;}
+  .dcard:hover{transform:scale(1.04);box-shadow:0 14px 34px rgba(0,0,0,.13);}
+  .dcirc{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 14px rgba(0,0,0,.15);margin-bottom:12px;}
+  .dname{font-size:20px;font-weight:800;color:#1f2937;margin-bottom:4px;}
+  .ddesc{font-size:14px;color:#6b7280;line-height:1.6;}
+  .banner{color:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.15);margin-bottom:20px;display:flex;align-items:center;gap:16px;}
+  .banner.center{flex-direction:column;text-align:center;gap:6px;}
+  .banner .be{font-size:48px;}
+  .banner .bn{font-size:22px;font-weight:800;}
+  .banner .bd{opacity:.9;font-size:14px;}
+  .sub{text-align:center;color:#4b5563;font-weight:bold;margin-bottom:16px;}
+  .opt{display:block;width:100%;text-align:right;background:#fff;border-radius:18px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.07);border:2px solid #f3f4f6;cursor:pointer;transition:.2s;margin-bottom:14px;font-family:inherit;}
+  .opt:hover{border-color:#c4b5fd;transform:scale(1.01);}
+  .opt .ot{font-weight:800;font-size:17px;color:#6d28d9;margin-bottom:6px;}
+  .opt .od{color:#4b5563;line-height:1.7;}
+  .result{max-width:640px;margin:0 auto;}
+  .rcard{background:#fff;border-radius:24px;padding:26px;box-shadow:0 12px 32px rgba(0,0,0,.1);border:4px solid #ede9fe;}
+  .rtitle{font-size:24px;font-weight:800;color:#6d28d9;margin-bottom:16px;text-align:center;}
+  .rtext{border-radius:18px;padding:18px;margin-bottom:16px;color:#374151;line-height:1.9;font-size:18px;}
+  .rtool{background:#fefce8;border:2px solid #fef08a;border-radius:18px;padding:16px;color:#854d0e;font-weight:bold;text-align:center;}
+  .ractions{display:flex;gap:12px;margin-top:22px;}
+  .ractions button{flex:1;border:none;font-family:inherit;font-weight:bold;font-size:16px;border-radius:18px;padding:14px;cursor:pointer;transition:.2s;}
+  .b-another{background:#ede9fe;color:#6d28d9;}
+  .b-another:hover{background:#ddd6fe;}
+  .b-home{background:linear-gradient(90deg,#a855f7,#ec4899);color:#fff;}
+  .b-home:hover{opacity:.9;}
+  @media(max-width:560px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-in">
+    <div class="header-top">
+      <button class="btn-home" onclick="goHome()">🏠 <span>בית</span></button>
+      <div class="title">🐉 משחק הדרקונים 🐉</div>
+      <div class="score">⭐ <span id="score">0</span></div>
+    </div>
+    <div class="toggle">
+      <div class="toggle-in">
+        <button id="tab-adult" class="tab active" onclick="setView('adult')">👨‍🏫 למבוגרים</button>
+        <button id="tab-child" class="tab" onclick="setView('child')">👦 לילדים</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const C={
+  writing:{a:"#60a5fa",b:"#2563eb",light:"#eff6ff",border:"#bfdbfe"},
+  losing:{a:"#f87171",b:"#dc2626",light:"#fef2f2",border:"#fecaca"},
+  waiting:{a:"#fb923c",b:"#ea580c",light:"#fff7ed",border:"#fed7aa"},
+  forbidden:{a:"#c084fc",b:"#9333ea",light:"#faf5ff",border:"#e9d5ff"},
+  fear:{a:"#facc15",b:"#ca8a04",light:"#fefce8",border:"#fef08a"},
+  change:{a:"#4ade80",b:"#16a34a",light:"#f0fdf4",border:"#bbf7d0"}
+};
+const dragons=[
+  {id:"writing",name:"דרקון כתיבה",description:"מופיע כשהכתיבה קשה ולא יוצאת כפי שרצינו",emoji:"✏️",responses:[
+    {title:"הכרה וחלוקה לחלקים",adult:"נזהה יחד את התסכול שמלווה את הכתיבה, ונחלק את המשימה ליחידות קטנות וברות-ביצוע – במקום לדרוש עמוד שלם, נתמקד בשלוש מילים מוצלחות.",child:"אֲנִי רוֹאֶה שֶׁהַכְּתִיבָה קָשָׁה עַכְשָׁיו. בּוֹא נַתְחִיל בְּצַעַד קָטָן – רַק שָׁלוֹשׁ מִלִּים יָפוֹת, וְנִרְאֶה אֵיךְ מַרְגִּישִׁים אַחַר כָּךְ.",tool:"כל מילה מוצלחת = נקודה לדרקון. שלוש נקודות = דרקון מאושר! ⭐"},
+    {title:"תהליך לפני תוצר",adult:"נסביר לילד את מושג הטיוטה: הכתיבה היא תהליך דו-שלבי – תחילה רישום חופשי של הרעיונות, ולאחר מכן עיבוד ושיפור. המושלמות אינה מטרת השלב הראשון.",child:"הֲיָדַעְתָּ שֶׁכָּל סוֹפֵר מַתְחִיל מִטְּיוּטָה? בּוֹא נִכְתֹּב קוֹדֶם אֶת הָרַעְיוֹנוֹת בְּחוֹפְשִׁיּוּת, וְאַחַר כָּךְ נְסַדֵּר אוֹתָם יַחַד.",tool:"טיוטה טובה היא הצעד הראשון בדרך לכתיבה מוצלחת 🍳"},
+    {title:"התאמת הסביבה",adult:"נבחן יחד את תנאי העבודה ונתאים אותם לצרכי הילד – גובה הכיסא, סדר השולחן, עוצמת התאורה ובחירת הכלי הכותב המתאים.",child:"אֵיפֹה אַתָּה מַרְגִּישׁ הֲכִי נוֹחַ לִכְתֹּב? אֵיזֶה עֵט נָעִים לְךָ בַּיָּד? בּוֹא נִמְצָא אֶת הַמָּקוֹם הַמֻּשְׁלָם שֶׁלְּךָ לִכְתִיבָה.",tool:"סביבת עבודה מותאמת אישית משפרת משמעותית את איכות הכתיבה 🪑"},
+    {title:"הגדרה מחודשת של כתיבה יפה",adult:"נאתגר יחד את הציפייה הבלתי-מציאותית לכתיבה מושלמת: כתיבה 'יפה' מוגדרת ככתיבה קריאה ומובנת – לא בהכרח אסתטית באופן מדויק.",child:"כְּתִיבָה יָפָה זֶה כְּתִיבָה שֶׁאֶפְשָׁר לִקְרֹא אוֹתָהּ בְּקַלּוּת. גַּם אִם הַשּׁוּרָה לֹא יְשָׁרָה לְגַמְרֵי – זֶה עֲדַיִן נֶחְשָׁב יָפֶה!",tool:"הדרקון לומד: יפה = קריא ומובן, לא בהכרח מושלם ✅"}
+  ]},
+  {id:"losing",name:"דרקון הפסד במשחק",description:"מגיח כשמפסידים וקשה להכיל את התחושה",emoji:"🎮",responses:[
+    {title:"הפסד כהזדמנות ללמידה",adult:"נסייע לילד להבין שהפסד הוא חלק בלתי נפרד מהתהליך: אפילו הספורטאים והשחקנים המוכשרים ביותר חוו כישלונות רבים בדרכם להצלחה.",child:"אַתָּה יוֹדֵעַ שֶׁגַּם הַכִּי טוֹבִים בָּעוֹלָם הִפְסִידוּ הַרְבֵּה פְּעָמִים לִפְנֵי שֶׁהִצְלִיחוּ? כָּל הֶפְסֵד לִמֵּד אוֹתָם מַשֶּׁהוּ חָדָשׁ.",tool:"נחשוב יחד: מה אפשר ללמוד מהמשחק הזה לפעם הבאה? 🏆"},
+    {title:"הפסד בכבוד",adult:"נלמד את הילד את מיומנות ה'הפסד מכובד': לברך את היריב, לשמור על קור-רוח ולהביע רצון להמשיך לשחק – אלו כישורים חברתיים חשובים.",child:"סְפּוֹרְטַאי אֲמִתִּי יוֹדֵעַ לְהַפְסִיד עִם רֹאשׁ מוּרָם – לוֹמַר 'מִשְׂחָק טוֹב' וְלִנְסוֹת שׁוּב. בּוֹא נְתַרְגֵּל אֶת זֶה יַחַד!",tool:"הפסד בכבוד מראה בגרות ואמינות – זה ניצחון אמיתי 😊"},
+    {title:"משחקים שיתופיים",adult:"נציע לשנות את מתכונת המשחק ולעבור למשחקים שיתופיים, שבהם המטרה המשותפת מחליפה את התחרות הישירה.",child:"בּוֹא נִמְצָא מִשְׂחָק שֶׁבּוֹ כֻּלָּנוּ עוֹבְדִים יַחַד לְעֵבֶר אוֹתָהּ מַטָּרָה! אֵין מַפְסִידִים – רַק קְבוּצָה אַחַת גְּדוֹלָה שֶׁמְּנַצַּחַת.",tool:"שיתוף פעולה מפתח מיומנויות חברתיות וצוותיות חשובות 🤝"}
+  ]},
+  {id:"waiting",name:"דרקון עצור",description:"מופיע כשנדרשת המתנה וסבלנות",emoji:"⏱️",responses:[
+    {title:"ערכת פעילויות להמתנה",adult:"נכין מראש 'ערכת המתנה' – אוסף של פעילויות קצרות ומגוונות שניתן לבצע בזמנים של המתנה, כדי למנוע תסכול ולהעסיק את הדעת.",child:"יֵשׁ לָנוּ זְמַן הַמְתָּנָה? מְעוּלֶּה! בּוֹא נַמְצִיא מַה כֵּיף לַעֲשׂוֹת בַּזְּמַן הַזֶּה. יֵשׁ לְךָ רַעְיוֹנוֹת?",tool:"ערכת המתנה הופכת זמן של שעמום לזמן של עשייה ויצירתיות 🎲"},
+    {title:"סקרנות ותצפית",adult:"נפתח את כישורי התצפית והסקרנות של הילד: נשאל שאלות שמזמינות חקירה של הסביבה הקרובה ומפנות את הקשב לפרטים שבדרך כלל נעלמים מן העין.",child:"בּוֹא נִהְיֶה חוֹקְרִים לְדַקָּה! כַּמָּה דְּבָרִים כְּחוּלִים אַתָּה רוֹאֶה סְבִיבְךָ? אֵיזֶה צְלָלִים אַתָּה שׁוֹמֵעַ עַכְשָׁיו?",tool:"תצפית מודעת מחזקת ריכוז ומקטינה חרדת המתנה 🔍"},
+    {title:"זמן איכות לעצמי",adult:"נסייע לילד להפנים שזמן ההמתנה אינו זמן אבוד, אלא הזדמנות נדירה לחשיבה, להרגעה ולחלימה.",child:"זְמַן הַהַמְתָּנָה הוּא כְּמוֹ מַתָּנָה קְטַנָּה – זְמַן שַׁיָּךְ רַק לְךָ, לַחְשֹׁב עַל כָּל מַה שֶּׁרוֹצִים!",tool:"הדרקון לומד להפוך המתנה לחוויה מועשרת ולא מעיקה 🎁"}
+  ]},
+  {id:"forbidden",name:"דרקון אסור",description:"מגיח כשאומרים 'לא' וקשה לקבל את הגבול",emoji:"🚫",responses:[
+    {title:"חיפוש חלופות",adult:"נסייע לילד לעבור מ'מדוע לא?' ל'כיצד כן?' – נבין יחד את הסיבה שמאחורי הגבול ונמצא דרכים חלופיות ומקובלות להשגת המטרה.",child:"בּוֹא נַחְשֹׁב בְּיַחַד: אֵיךְ עוֹד אֶפְשָׁר לְהַשִּׂיג אֶת מַה שֶּׁרָצִיתָ? יֵשׁ כַּמָּה דְּרָכִים מְגַנִּיבוֹת שֶׁלֹּא חָשַׁבְתָּ עֲלֵיהֶן.",tool:"הדרקון לומד לשאול 'איך כן?' במקום להילחם על ה'לא' 💡"},
+    {title:"הבנת סוגי 'לא'",adult:"נסביר לילד שקיימים סוגים שונים של סירוב: 'לא עכשיו', 'לא בצורה זו', 'לא כרגע' – ולא בהכרח 'לא לעולם'. ההבחנה ביניהם מסייעת להפחית תסכול.",child:"כְּשֶׁאוֹמְרִים 'לֹא', לִפְעָמִים הַכַּוָּנָה הִיא 'לֹא עַכְשָׁיו' אוֹ 'לֹא בַּדֶּרֶךְ הַזֹּאת'. בּוֹא נְגַלֶּה יַחַד מַה בְּדִיּוּק הַכַּוָּנָה!",tool:"הדרקון הופך לבלש שמפענח את המשמעות האמיתית של 'לא' 🕵️"},
+    {title:"רשימת האפשרויות",adult:"נפנה את תשומת הלב מהאיסור אל מה שכן מותר ואפשרי – נכין יחד רשימה של פעילויות ואפשרויות פתוחות.",child:"נָכוֹן שֶׁזֶּה מְאַכְזֵב. אֲבָל הֵנֵּה מַה שֶּׁכֵּן אֶפְשָׁר לַעֲשׂוֹת עַכְשָׁיו! בּוֹא נִמְצָא מַשֶּׁהוּ מְגַנִּיב מֵהָרְשִׁימָה.",tool:"הדרקון מגלה שתמיד יש לפחות אפשרות אחת פתוחה ✅"}
+  ]},
+  {id:"fear",name:"דרקון פחד מאי הצלחה",description:"מופיע כשחוששים לנסות מחשש להיכשל",emoji:"😰",responses:[
+    {title:"פירוק למשימות קטנות",adult:"נפרק את האתגר לצעדים קטנים ומוגדרים, כך שכל שלב יהיה ברור ובר-ביצוע – ההצלחה בכל צעד מקטין את תחושת האיום ומחזקת את המוטיבציה.",child:"בּוֹא נְפָרֵק אֶת הַדָּבָר הַגָּדוֹל לַחֲלָקִים קְטַנִּים. הַצַּעַד הָרִאשׁוֹן הוּא הַקַּל בְּיוֹתֵר – רַק הוּא, וְיוֹתֵר לֹא!",tool:"כל צעד שהושלם הוא הצלחה בפני עצמה – הדרקון טופס למעלה! 🏔️"},
+    {title:"ניסיון כהצלחה",adult:"נשנה את הגדרת ההצלחה: לא רק התוצאה הסופית נחשבת – גם עצם הניסיון, האומץ ללכת לעבר האתגר, הוא הישג ראוי לשבח.",child:"עַצְמוֹ זֶה שֶׁאַתָּה מְנַסֶּה – זֶה כְּבָר אֹמֶץ אֲמִתִּי! לֹא מַשְׁנֶה מַה יִּקְרֶה, כְּבָר עָשִׂיתָ מַשֶּׁהוּ מַדְהִים.",tool:"הדרקון צובר נקודות על כל ניסיון – לא רק על הצלחות 🌟"},
+    {title:"בניית בסיס ביטחון",adult:"נתחיל מפעילויות שהילד כמעט בטוח שיצליח בהן, כדי לבנות תחושת מסוגלות הדרגתית שתשמש בסיס להתמודדות עם אתגרים קשים יותר.",child:"בּוֹא נַתְחִיל בְּמַשֶּׁהוּ שֶׁאַתָּה כִּמְעַט בָּטוּחַ שֶׁתַּצְלִיחַ בּוֹ. כְּשֶׁתַּרְגִּישׁ חָזָק, נַעֲבֹר לָאַתְגָּר הַבָּא!",tool:"בנק הביטחון של הדרקון מתמלא הצלחה אחר הצלחה 🏦"}
+  ]},
+  {id:"change",name:"דרקון שינויים",description:"מגיח כשמשהו משתנה וקשה להסתגל",emoji:"🔄",responses:[
+    {title:"איתור העוגן הקבוע",adult:"נסייע לילד לזהות מה בדיוק השתנה ומה נותר קבוע, כדי ליצור תחושת יציבות ובטחון גם בתוך השינוי.",child:"גַּם כְּשֶׁדְּבָרִים מִשְׁתַּנִּים, תָּמִיד נִשְׁאָר מַשֶּׁהוּ קָבוּעַ. בּוֹא נִמְצָא יַחַד מַה זֶּה הַדָּבָר הַקָּבוּעַ שֶׁאֶפְשָׁר לִסְמֹךְ עָלָיו.",tool:"הדרקון מוצא את העוגן שנותן יציבות גם בזמן שינוי ⚓"},
+    {title:"שינוי כהזדמנות",adult:"נעזור לילד לאמץ נקודת מבט חיובית: שינויים מביאים עמם לפעמים הזדמנויות, חוויות חדשות ואפשרויות שלא היו קיימות קודם.",child:"שִׁינּוּיִים יְכוֹלִים לִהְיוֹת כְּמוֹ הַפְתָּעוֹת טוֹבוֹת! בּוֹא נְגַלֶּה יַחַד מַה חָדָשׁ וּמְעַנְיֵן הִגִּיעַ עִם הַשִּׁינּוּי הַזֶּה.",tool:"הדרקון הופך לחוקר שמגלה דברים חדשים ומרגשים 🎁"},
+    {title:"הסתגלות הדרגתית",adult:"נכין תוכנית מעבר מובנית – נחשוף את הילד לשינוי בצורה הדרגתית ומבוקרת, תוך מתן הזמן הנדרש להסתגלות.",child:"בּוֹא נַכִּיר אֶת הַשִּׁינּוּי הֶחָדָשׁ לְאַט לְאַט, קְצָת קְצָת – כְּמוֹ שֶׁמְּנַסִּים אֹכֶל חָדָשׁ בְּלָשׁוֹן קְטַנָּה תְּחִלָּה.",tool:"הסתגלות הדרגתית עוזרת לדרקון להרגיש בנוח עם השינוי 🍽️"}
+  ]}
+];
+
+let currentDragon=null, selectedResponse=null, viewMode="adult", score=0, showResult=false;
+const app=document.getElementById('app');
+function grad(id){const c=C[id];return `linear-gradient(135deg,${c.a},${c.b})`;}
+function setView(m){
+  viewMode=m;
+  document.getElementById('tab-adult').className='tab'+(m==='adult'?' active':'');
+  document.getElementById('tab-child').className='tab'+(m==='child'?' active':'');
+  render();
+}
+function pickDragon(id){currentDragon=dragons.find(d=>d.id===id);selectedResponse=null;showResult=false;render();}
+function selectResponse(i){selectedResponse=currentDragon.responses[i];score++;document.getElementById('score').textContent=score;showResult=true;render();}
+function tryAnother(){showResult=false;render();}
+function goHome(){currentDragon=null;selectedResponse=null;showResult=false;render();}
+function render(){
+  if(!currentDragon){
+    app.innerHTML=`<div class="fade">
+      <div class="intro"><div class="spark">✨</div>
+        <h2>איזה דרקון הופיע לך היום?</h2>
+        <p>בחר את הדרקון שהכי מתאים למצב שלך עכשיו</p></div>
+      <div class="grid">
+      ${dragons.map(d=>`<button class="dcard" style="background:${C[d.id].light};border-color:${C[d.id].border};" onclick="pickDragon('${d.id}')">
+        <div class="dcirc" style="background:${grad(d.id)};">${d.emoji}</div>
+        <div class="dname">${d.name}</div>
+        <div class="ddesc">${d.description}</div>
+      </button>`).join('')}
+      </div></div>`;
+    return;
+  }
+  if(!showResult){
+    const d=currentDragon;
+    app.innerHTML=`<div class="fade">
+      <div class="banner" style="background:${grad(d.id)};"><div class="be">${d.emoji}</div>
+        <div><div class="bn">${d.name}</div><div class="bd">${d.description}</div></div></div>
+      <div class="sub">${viewMode==='adult'?'👨‍🏫 בחר דרך תגובה למבוגר:':'👦 בחר תגובה לילד:'}</div>
+      ${d.responses.map((r,i)=>`<button class="opt" onclick="selectResponse(${i})">
+        <div class="ot">${r.title}</div>
+        <div class="od">${viewMode==='adult'?r.adult:r.child}</div>
+      </button>`).join('')}
+    </div>`;
+    return;
+  }
+  const d=currentDragon,r=selectedResponse;
+  app.innerHTML=`<div class="fade result">
+    <div class="banner center" style="background:${grad(d.id)};"><div class="be">${d.emoji}</div><div class="bn">${d.name}</div></div>
+    <div class="rcard">
+      <div class="rtitle">${r.title}</div>
+      <div class="rtext" style="background:${C[d.id].light};">${viewMode==='adult'?r.adult:r.child}</div>
+      <div class="rtool">🛠️ ${r.tool}</div>
+      <div class="ractions">
+        <button class="b-another" onclick="tryAnother()">↩️ תגובה אחרת</button>
+        <button class="b-home" onclick="goHome()">🏠 דרקון אחר</button>
+      </div>
+    </div>
+  </div>`;
+}
+render();
+</script>
+</body>
+</html>
